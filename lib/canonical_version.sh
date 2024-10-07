@@ -6,7 +6,7 @@ fetch_gleam_versions() {
   curl -s "https://api.github.com/repos/gleam-lang/gleam/releases" > /tmp/gleam_versions.json
   cat /tmp/gleam_versions.json | \
     jq -r 'map(select(.draft == false)) | .[].tag_name' | \
-    sed -e 's/^OTP-//' | \
+    sed -e 's/^v//' | \
     sort -Vr > /tmp/gleam_versions
 }
 
