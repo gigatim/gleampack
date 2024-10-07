@@ -2,11 +2,10 @@
 
 set -e -o pipefail
 
-mix_file_url="$1/mix.exs"
+gleam_file="$1/gleam.toml"
 
-if [ -f $mix_file_url ];
-then
-  echo "Elixir"
+if [ -f "${gleam_file}" ]; then
+  echo "Gleam"
   exit 0
 else
   exit 1
