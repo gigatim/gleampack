@@ -3,8 +3,11 @@
 fetch_gleam_versions() {
   local otp=$1
 
-  url="https://builds.hex.pm/builds/gleam/builds.txt"
-  curl -s "$url" | awk '/^v[0-9.]+[- ]/ { print $1 }' | grep "\-otp-$otp" | sed -e "s/-otp-${otp}//" | sed -e 's/^v//' > /tmp/gleam_versions
+  curl -s "https://api.github.com/repos/gleam-lang/gleam/releases" > /tmp/gleam_versions.json
+  cat /tmp/gleam_versions.json | \
+    jq -r 'map(select(.draft == false)) | .[].tag_name' | \
+    sed -e 's/^OTP-//' | \
+    sort -Vr > /tmp/otp_versions
 }
 
 fetch_erlang_versions() {
@@ -60,8 +63,8 @@ check_erlang_version() {
 }
 
 check_gleam_version() {
-  echo "THERE"
   version=${1#v}
+  echo $version
   fetch_gleam_versions
   exists=$(exact_gleam_version_available "$version")
   if [ $exists -ne 0 ]; then
