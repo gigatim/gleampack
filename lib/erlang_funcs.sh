@@ -4,7 +4,7 @@ function erlang_tarball() {
 
 function download_erlang() {
   mkdir -p $(erlang_cache_path)
-  erlang_package_url="$(erlang_builds_url)/$(erlang_tarball)"
+  erlang_package_url="${erlang_builds_url}/$(erlang_tarball)"
 
   # If a previous download does not exist, then always re-download
   if [ ! -f $(erlang_cache_path)/$(erlang_tarball) ]; then
