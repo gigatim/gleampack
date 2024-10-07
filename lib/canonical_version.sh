@@ -7,7 +7,7 @@ fetch_gleam_versions() {
   cat /tmp/gleam_versions.json | \
     jq -r 'map(select(.draft == false)) | .[].tag_name' | \
     sed -e 's/^OTP-//' | \
-    sort -Vr > /tmp/otp_versions
+    sort -Vr > /tmp/gleam_versions
 }
 
 fetch_erlang_versions() {
