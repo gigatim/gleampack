@@ -34,6 +34,9 @@ export_mix_home
 export_hex_home
 load_config
 check_erlang_version "$erlang_version"
+echo "HERE"
+echo "$gleam_version"
+set -v
 check_gleam_version "$gleam_version"
 
 check_stack
