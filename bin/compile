@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -e -o pipefail
+set -v
 
 # If this var is set to true later on,
 # then gleam and rebar will be rebuilt
