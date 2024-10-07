@@ -60,6 +60,7 @@ check_erlang_version() {
 }
 
 check_gleam_version() {
+  set -v
   version=${1#v}
   fetch_gleam_versions
   exists=$(exact_gleam_version_available "$version")
