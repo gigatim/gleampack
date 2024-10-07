@@ -14,12 +14,12 @@ function runtime_erlang_path() {
   echo "$(runtime_platform_tools_path)/erlang"
 }
 
-function build_elixir_path() {
-  echo "$(build_platform_tools_path)/elixir"
+function build_gleam_path() {
+  echo "$(build_platform_tools_path)/gleam"
 }
 
-function runtime_elixir_path() {
-  echo "$(runtime_platform_tools_path)/elixir"
+function runtime_gleam_path() {
+  echo "$(runtime_platform_tools_path)/gleam"
 }
 
 function build_hex_home_path() {
@@ -39,7 +39,7 @@ function runtime_mix_home_path() {
 }
 
 function stack_based_cache_path() {
-  echo "${cache_path}/gigalixir-buildpack-elixir/stack-cache"
+  echo "${cache_path}/gigalixir-buildpack-gleam/stack-cache"
 }
 
 function deps_backup_path() {
@@ -62,6 +62,6 @@ function erlang_cache_path() {
   echo $(stack_based_cache_path)/erlang
 }
 
-function elixir_cache_path() {
-  echo $(stack_based_cache_path)/elixir
+function gleam_cache_path() {
+  echo $(stack_based_cache_path)/gleam
 }

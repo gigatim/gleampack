@@ -10,7 +10,7 @@ function download_erlang() {
   if [ ! -f $(erlang_cache_path)/$(erlang_tarball) ]; then
     clean_erlang_downloads
 
-    # Set this so elixir will be force-rebuilt
+    # Set this so gleam will be force-rebuilt
     erlang_changed=true
 
     output_section "Fetching Erlang ${erlang_version} from ${erlang_package_url}"
@@ -44,7 +44,7 @@ function install_erlang() {
 
   # only copy if using old build system;
   # newer versions of the build system run builds with BUILD_PATH=/app
-  # https://github.com/HashNuke/heroku-buildpack-elixir/issues/194#issuecomment-800425532
+  # https://github.com/HashNuke/heroku-buildpack-gleam/issues/194#issuecomment-800425532
   if [ $(build_erlang_path) != $(runtime_erlang_path) ]; then
     mkdir -p $(build_erlang_path)
     cp -R $(runtime_erlang_path)/* $(build_erlang_path)

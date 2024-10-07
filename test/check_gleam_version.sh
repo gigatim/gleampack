@@ -6,7 +6,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 source $SCRIPT_DIR/.test_support.sh
 
 # include source file
-source $SCRIPT_DIR/../lib/elixir_funcs.sh
+source $SCRIPT_DIR/../lib/gleam_funcs.sh
 source $SCRIPT_DIR/../lib/canonical_version.sh
 
 # override functions
@@ -25,22 +25,22 @@ output_line() {
 
 # TESTS
 ######################
-suite "check_elixir_version"
+suite "check_gleam_version"
 
   STACK="heroku-24"
 
   test "bad version"
 
-    check_elixir_version v0.1.0 26.0
+    check_gleam_version v0.1.0 26.0
 
     [ "$EXIT_CODE" == 1 ]
-    echo ${OUTPUT_LINES[0]} | grep -q "Elixir '0.1.0' isn't currently supported"
+    echo ${OUTPUT_LINES[0]} | grep -q "Gleam '0.1.0' isn't currently supported"
 
 
 
   test "good version"
 
-    check_elixir_version v1.16.2 26.0
+    check_gleam_version v1.16.2 26.0
 
     [ "$EXIT_CODE" == "0" ]
 

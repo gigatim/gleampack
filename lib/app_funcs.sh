@@ -4,7 +4,7 @@ function restore_app() {
     cp -pR $(deps_backup_path)/* ${build_path}/deps || true
   fi
 
-  if [ $erlang_changed != true ] && [ $elixir_changed != true ]; then
+  if [ $erlang_changed != true ] && [ $gleam_changed != true ]; then
     if [ -d $(build_backup_path) ]; then
       mkdir -p ${build_path}/_build
       cp -pR $(build_backup_path)/* ${build_path}/_build || true
@@ -18,9 +18,9 @@ function copy_hex() {
 
   # copying hex is only necessary on the old build system.
   # If the build_hex_home_path is the same as runtime_hex_home_path
-  # (which is specifified by the buildpack consumer in their elixir_buildpack.config),
+  # (which is specifified by the buildpack consumer in their gleam_buildpack.config),
   # then we don't need to copy (and doing so will result in an error)
-  # https://github.com/HashNuke/heroku-buildpack-elixir/issues/194
+  # https://github.com/HashNuke/heroku-buildpack-gleam/issues/194
   if [ $(build_hex_home_path) != $(runtime_hex_home_path) ]; then
     output_section "Copying hex from $(build_hex_home_path)"
     cp -R $(build_hex_home_path)/* "$(runtime_hex_home_path)/"
@@ -158,7 +158,7 @@ function export_default_var() {
 function echo_profile_env_vars() {
   local buildpack_bin="$(runtime_platform_tools_path)"
   buildpack_bin="$(runtime_erlang_path)/bin:${buildpack_bin}"
-  buildpack_bin="$(runtime_elixir_path)/bin:${buildpack_bin}"
+  buildpack_bin="$(runtime_gleam_path)/bin:${buildpack_bin}"
 
 
   export_var "PATH" "${buildpack_bin}:\$PATH"
@@ -173,7 +173,7 @@ function echo_profile_env_vars() {
 function echo_export_env_vars() {
   local buildpack_bin="$(build_platform_tools_path)"
   buildpack_bin="$(build_erlang_path)/bin:${buildpack_bin}"
-  buildpack_bin="$(build_elixir_path)/bin:${buildpack_bin}"
+  buildpack_bin="$(build_gleam_path)/bin:${buildpack_bin}"
 
 
   export_var "PATH" "${buildpack_bin}:\$PATH"
@@ -188,7 +188,7 @@ function echo_export_env_vars() {
 function write_profile_d_script() {
   output_section "Creating .profile.d with env vars"
   mkdir -p $build_path/.profile.d
-  local profile_path="${build_path}/.profile.d/elixir_buildpack_paths.sh"
+  local profile_path="${build_path}/.profile.d/gleam_buildpack_paths.sh"
 
   echo_profile_env_vars >> $profile_path
 }

@@ -11,8 +11,8 @@ source $SCRIPT_DIR/../lib/misc_funcs.sh
 # reset function
 function reset_test() {
   erlang_version=""
-  elixir_version=""
-  rm -f $build_path/elixir_buildpack.config $build_path/.tool-versions
+  gleam_version=""
+  rm -f $build_path/gleam_buildpack.config $build_path/.tool-versions
 }
 
 
@@ -32,24 +32,24 @@ suite "load_config"
 
   test "missing config file, but has asdf file, missing erlang version"
 
-    echo "elixir 1.10.4" > $build_path/.tool-versions
+    echo "gleam 1.10.4" > $build_path/.tool-versions
 
     load_config > /dev/null
 
     [ -z "$erlang_version" ]
-    [ "$elixir_version" == "v1.10.4" ]
+    [ "$gleam_version" == "v1.10.4" ]
     [ $failed == "true" ]
 
 
 
-  test "missing config file, but has asdf file, missing elixir version"
+  test "missing config file, but has asdf file, missing gleam version"
 
     echo "erlang 25.2" > $build_path/.tool-versions
 
     load_config > /dev/null
 
     [ "$erlang_version" == "25.2" ]
-    [ -z "$elixir_version" ]
+    [ -z "$gleam_version" ]
     [ $failed == "true" ]
 
 
@@ -57,42 +57,42 @@ suite "load_config"
   test "missing config file, but has asdf file"
 
     echo "erlang 25.2" > $build_path/.tool-versions
-    echo "elixir 1.10.4" >> $build_path/.tool-versions
+    echo "gleam 1.10.4" >> $build_path/.tool-versions
 
     load_config > /dev/null
 
     [ "$erlang_version" == "25.2" ]
-    [ "$elixir_version" == "v1.10.4" ]
+    [ "$gleam_version" == "v1.10.4" ]
     [ $failed == "false" ]
 
 
 
   test "has config file, but versions specified in asdf"
 
-    touch $build_path/elixir_buildpack.config
+    touch $build_path/gleam_buildpack.config
 
     echo "erlang 25.2" > $build_path/.tool-versions
-    echo "elixir 1.10.4" >> $build_path/.tool-versions
+    echo "gleam 1.10.4" >> $build_path/.tool-versions
 
     load_config > /dev/null
 
     [ "$erlang_version" == "25.2" ]
-    [ "$elixir_version" == "v1.10.4" ]
+    [ "$gleam_version" == "v1.10.4" ]
     [ $failed == "false" ]
 
 
 
   test "fixes single integer erlang versions"
 
-    echo "erlang_version=25" > $build_path/elixir_buildpack.config
+    echo "erlang_version=25" > $build_path/gleam_buildpack.config
 
     echo "erlang 25.2" > $build_path/.tool-versions
-    echo "elixir 1.10.4" >> $build_path/.tool-versions
+    echo "gleam 1.10.4" >> $build_path/.tool-versions
 
     load_config > /dev/null
 
     [ "$erlang_version" == "25.0" ]
-    [ "$elixir_version" == "v1.10.4" ]
+    [ "$gleam_version" == "v1.10.4" ]
     [ $failed == "false" ]
 
 

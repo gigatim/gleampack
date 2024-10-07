@@ -32,7 +32,7 @@ function output_stderr() {
 }
 
 
-function assert_elixir_version_set() {
+function assert_gleam_version_set() {
   custom_config_file=$1
 
   # 0 when found
@@ -40,15 +40,15 @@ function assert_elixir_version_set() {
   # 2 when file does not exist
 
   set +e
-  # this command is allowed to return a non-zero exit code since that is how we check if the elixir version is set.
-  grep -q -e "^elixir_version=" $custom_config_file 2>/dev/null
+  # this command is allowed to return a non-zero exit code since that is how we check if the gleam version is set.
+  grep -q -e "^gleam_version=" $custom_config_file 2>/dev/null
   set -e
 
   if [ $? -ne 0 ]; then
     # For now, just print a warning. In the future, we will fail and require an explicit
-    # elixir_version to be set.
+    # gleam_version to be set.
     output_line ""
-    output_warning "IMPORTANT: The default elixir_version will be removed on 2021-06-01. Please explicitly set an elixir_version in your elixir_buildpack.config before then or your deploys will fail."
+    output_warning "IMPORTANT: The default gleam_version will be removed on 2021-06-01. Please explicitly set an gleam_version in your gleam_buildpack.config before then or your deploys will fail."
     output_line ""
   fi
 }
@@ -63,35 +63,35 @@ function extract_asdf_version() {
 }
 
 function load_config() {
-  output_section "Checking Erlang and Elixir versions"
+  output_section "Checking Erlang and Gleam versions"
 
-  local custom_config_file="${build_path}/elixir_buildpack.config"
+  local custom_config_file="${build_path}/gleam_buildpack.config"
 
   # Source for default versions file from buildpack first
-  source "${build_pack_path}/elixir_buildpack.config"
+  source "${build_pack_path}/gleam_buildpack.config"
 
   erlang_version=$(extract_asdf_version "erlang")
-  elixir_version=$(extract_asdf_version "elixir")
+  gleam_version=$(extract_asdf_version "gleam")
 
   if [ -f $custom_config_file ];
   then
     source $custom_config_file
-    assert_elixir_version_set $custom_config_file
+    assert_gleam_version_set $custom_config_file
   fi
 
-  if [ -z "$erlang_version" ] || [ -z "$elixir_version" ]; then
-    output_line "Sorry, an elixir_buildpack.config or asdf .tool-versions file is required."
-    output_line "Please see https://github.com/gigalixir/gigalixir-buildpack-elixir#configuration"
+  if [ -z "$erlang_version" ] || [ -z "$gleam_version" ]; then
+    output_line "Sorry, an gleam_buildpack.config or asdf .tool-versions file is required."
+    output_line "Please see https://github.com/gigalixir/gigalixir-buildpack-gleam#configuration"
     exit 1
   fi
 
   fix_erlang_version
-  fix_elixir_version
+  fix_gleam_version
 
   output_line "Will use the following versions:"
   output_line "* Stack ${STACK}"
   output_line "* Erlang ${erlang_version}"
-  output_line "* Elixir ${elixir_version[0]} ${elixir_version[1]}"
+  output_line "* Gleam ${gleam_version[0]} ${gleam_version[1]}"
 }
 
 
@@ -165,10 +165,10 @@ function clean_old_cache_files() {
     ${cache_path}/.mix \
     ${cache_path}/.hex
   rm -rf ${cache_path}/OTP-*.zip
-  rm -rf ${cache_path}/elixir*.zip
+  rm -rf ${cache_path}/gleam*.zip
 }
 
-function clean_elixir_version_dependent_cache() {
+function clean_gleam_version_dependent_cache() {
   rm -rf \
     $(hex_backup_path) \
     $(mix_backup_path)
@@ -196,35 +196,35 @@ function fix_erlang_version() {
   fi
 }
 
-function fix_elixir_version() {
-  # TODO: this breaks if there is an carriage return behind elixir_version=(branch main)^M
-  if [ ${#elixir_version[@]} -eq 2 ] && [ ${elixir_version[0]} = "branch" ]; then
+function fix_gleam_version() {
+  # TODO: this breaks if there is an carriage return behind gleam_version=(branch main)^M
+  if [ ${#gleam_version[@]} -eq 2 ] && [ ${gleam_version[0]} = "branch" ]; then
     force_fetch=true
-    elixir_version=${elixir_version[1]}
+    gleam_version=${gleam_version[1]}
 
-  elif [ ${#elixir_version[@]} -eq 1 ]; then
+  elif [ ${#gleam_version[@]} -eq 1 ]; then
     force_fetch=false
 
     # If we detect a version string (e.g. 1.14 or 1.14.0) we prefix it with "v"
-    if [[ ${elixir_version} =~ ^[0-9]+\.[0-9]+ ]]; then
-      if [[ ${elixir_version} =~ ^[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$ ]]; then
+    if [[ ${gleam_version} =~ ^[0-9]+\.[0-9]+ ]]; then
+      if [[ ${gleam_version} =~ ^[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$ ]]; then
         echo "Detected release candidate"
       else
         # strip out any non-digit non-dot characters
-        elixir_version=$(echo "$elixir_version" | sed 's/[^0-9.]*//g')
+        gleam_version=$(echo "$gleam_version" | sed 's/[^0-9.]*//g')
       fi
-      elixir_version=v${elixir_version}
+      gleam_version=v${gleam_version}
     fi
 
   else
-    output_line "Invalid Elixir version specified"
+    output_line "Invalid Gleam version specified"
     output_line "See the README for allowed formats at:"
-    output_line "https://github.com/gigalixir/gigalixir-buildpack-elixir"
+    output_line "https://github.com/gigalixir/gigalixir-buildpack-gleam"
     exit 1
   fi
 
-  if [ -z "$elixir_version" ]; then
-    output_line "Unable to detect elixir version"
+  if [ -z "$gleam_version" ]; then
+    output_line "Unable to detect gleam version"
     exit 1
   fi
 }
