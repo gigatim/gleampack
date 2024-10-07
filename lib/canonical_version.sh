@@ -1,23 +1,5 @@
 #!/usr/bin/env bash
 
-erlang_builds_url() {
-  case "${STACK}" in
-    "heroku-20")
-      erlang_builds_url="https://builds.hex.pm/builds/otp/ubuntu-20.04"
-      ;;
-    "heroku-22")
-      erlang_builds_url="https://builds.hex.pm/builds/otp/ubuntu-22.04"
-      ;;
-    "heroku-24")
-      erlang_builds_url="https://builds.hex.pm/builds/otp/ubuntu-24.04"
-      ;;
-    *)
-      erlang_builds_url="https://s3.amazonaws.com/heroku-buildpack-gleam/erlang/cedar-14"
-      ;;
-  esac
-  echo $erlang_builds_url
-}
-
 fetch_gleam_versions() {
   local otp=$1
 
@@ -27,21 +9,13 @@ fetch_gleam_versions() {
 
 fetch_erlang_versions() {
   case "${STACK}" in
-    "heroku-20")
-      url="https://builds.hex.pm/builds/otp/ubuntu-20.04/builds.txt"
-      curl -s "$url" | awk '/^OTP-([0-9.]+ )/ {print substr($1,5)}' > /tmp/otp_versions
-      ;;
-    "heroku-22")
-      url="https://builds.hex.pm/builds/otp/ubuntu-22.04/builds.txt"
-      curl -s "$url" | awk '/^OTP-([0-9.]+ )/ {print substr($1,5)}' > /tmp/otp_versions
-      ;;
     "heroku-24")
       url="https://builds.hex.pm/builds/otp/ubuntu-24.04/builds.txt"
       curl -s "$url" | awk '/^OTP-([0-9.]+ )/ {print substr($1,5)}' > /tmp/otp_versions
       ;;
     *)
-      url="https://raw.githubusercontent.com/HashNuke/heroku-buildpack-gleam-otp-builds/master/otp-versions"
-      curl -s "$url" > /tmp/otp_versions
+      echo "Gleam is not supported on this stack version."
+      exit 1
       ;;
   esac
 }
@@ -87,11 +61,10 @@ check_erlang_version() {
 
 check_gleam_version() {
   version=${1#v}
-  otp=$(otp_version "$2")
-  fetch_gleam_versions "$otp"
+  fetch_gleam_versions
   exists=$(exact_gleam_version_available "$version")
   if [ $exists -ne 0 ]; then
-    output_line "Sorry, Gleam '$version' isn't currently supported for OTP $otp or isn't formatted correctly."
+    output_line "Sorry, Gleam '$version' isn't currently supported or isn't formatted correctly."
     output_line "Available versions:"
     while read -r line; do
       output_line "    $line"
