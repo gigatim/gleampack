@@ -64,45 +64,6 @@ function clean_gleam_downloads() {
   mkdir -p $(gleam_cache_path)
 }
 
-function restore_mix() {
-  if [ -d $(mix_backup_path) ]; then
-    mkdir -p $(build_mix_home_path)
-    cp -pR $(mix_backup_path)/* $(build_mix_home_path)
-  fi
-
-  if [ -d $(hex_backup_path) ]; then
-    mkdir -p $(build_hex_home_path)
-    cp -pR $(hex_backup_path)/* $(build_hex_home_path)
-  fi
-}
-
-function backup_mix() {
-  # Delete the previous backups
-  rm -rf $(mix_backup_path) $(hex_backup_path)
-
-  mkdir -p $(mix_backup_path) $(hex_backup_path)
-
-  cp -pR $(build_mix_home_path)/* $(mix_backup_path)
-  cp -pR $(build_hex_home_path)/* $(hex_backup_path)
-
-  # https://github.com/HashNuke/heroku-buildpack-gleam/issues/194
-  if [ $(build_hex_home_path) != $(runtime_hex_home_path) ]; then
-    mkdir -p $(runtime_hex_home_path)
-    cp -pR $(build_hex_home_path)/* $(runtime_hex_home_path)
-  fi
-
-  # https://github.com/HashNuke/heroku-buildpack-gleam/issues/194
-  if [ $(build_mix_home_path) != $(runtime_mix_home_path) ]; then
-    mkdir -p $(runtime_mix_home_path)
-    cp -pR $(build_mix_home_path)/* $(runtime_mix_home_path)
-  fi
-}
-
-function install_hex() {
-  output_section "Installing Hex"
-  mix local.hex --force
-}
-
 function install_rebar() {
   output_section "Installing rebar"
 

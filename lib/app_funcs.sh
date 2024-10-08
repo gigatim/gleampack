@@ -13,20 +13,6 @@ function restore_app() {
 }
 
 
-function copy_hex() {
-  mkdir -p $(runtime_hex_home_path)
-
-  # copying hex is only necessary on the old build system.
-  # If the build_hex_home_path is the same as runtime_hex_home_path
-  # (which is specifified by the buildpack consumer in their gleam_buildpack.config),
-  # then we don't need to copy (and doing so will result in an error)
-  # https://github.com/HashNuke/heroku-buildpack-gleam/issues/194
-  if [ $(build_hex_home_path) != $(runtime_hex_home_path) ]; then
-    output_section "Copying hex from $(build_hex_home_path)"
-    cp -R $(build_hex_home_path)/* "$(runtime_hex_home_path)/"
-  fi
-}
-
 function hook_pre_app_dependencies() {
   cd $build_path
 
