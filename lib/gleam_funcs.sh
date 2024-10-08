@@ -5,18 +5,13 @@ function download_gleam() {
   if [ ${force_fetch} = true ] || [ ! -f $(gleam_cache_path)/$(gleam_download_file) ]; then
     clean_gleam_downloads
     gleam_changed=true
-    local otp_version=$(otp_version ${erlang_version})
+    local download_url="https://github.com/gleam-lang/gleam/releases/download/v1.5.0/gleam-v${gleam_version}-x86_64-unknown-linux-musl.tar.gz"
+      
+    output_section "Fetching Gleam ${gleam_version}"
 
-    local download_url="https://builds.hex.pm/builds/gleam/${gleam_version}-otp-${otp_version}.zip"
-
-    output_section "Fetching Gleam ${gleam_version} for OTP ${otp_version} from ${download_url}"
-
-    curl -s ${download_url} -o $(gleam_cache_path)/$(gleam_download_file)
-
-    if [ $? -ne 0 ]; then
-      output_section "Falling back to fetching Gleam ${gleam_version} for generic OTP version"
-      local download_url="https://builds.hex.pm/builds/gleam/${gleam_version}.zip"
-      curl -s ${download_url} -o $(gleam_cache_path)/$(gleam_download_file) || exit 1
+    if ! curl -s ${download_url} -o $(gleam_cache_path)/$(gleam_download_file); then
+      output_section "Falling back to fetching Gleam ${gleam_version}"
+      exit 1
     fi
   else
     output_section "Using cached Gleam ${gleam_version}"
@@ -28,30 +23,13 @@ function install_gleam() {
 
   mkdir -p $(build_gleam_path)
 
-  cd $(build_gleam_path)
-
-  if type "unzip" &> /dev/null; then
-    unzip -q $(gleam_cache_path)/$(gleam_download_file)
-  else
-    jar xf $(gleam_cache_path)/$(gleam_download_file)
-  fi
-
-  cd - > /dev/null
-
-  if [ $(build_gleam_path) != $(runtime_gleam_path) ]; then
-    mkdir -p $(runtime_gleam_path)
-    cp -R $(build_gleam_path)/* $(runtime_gleam_path)
-  fi
-
-  chmod +x $(build_gleam_path)/bin/*
-  PATH=$(build_gleam_path)/bin:${PATH}
-
-  export LC_CTYPE=en_US.utf8
+  tar -xvf $(gleam_cache_path)/$(gleam_download_file) -C $(build_gleam_path)
+  PATH=$(build_gleam_path):${PATH}
 }
 
 function gleam_download_file() {
   local otp_version=$(otp_version ${erlang_version})
-  echo gleam-${gleam_version}-otp-${otp_version}.zip
+  echo gleam-${gleam_version}.tar.gz
 }
 
 function clean_gleam_downloads() {

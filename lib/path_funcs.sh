@@ -15,7 +15,7 @@ function runtime_erlang_path() {
 }
 
 function build_gleam_path() {
-  echo "$(build_platform_tools_path)/gleam"
+  echo "$(build_platform_tools_path)/gleam/bin"
 }
 
 function runtime_gleam_path() {
