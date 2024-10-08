@@ -1,17 +1,47 @@
+function check_gleam_cache() {
+  use_gleam_cache=false
+
+  if [ -f $(gleam_cache_path)/${gleam_download_file} ]; then
+    if [ -f $(gleam_cache_path)/${gleam_download_file}.sha256 ]; then
+      cd $(gleam_cache_path)
+      if sha256sum -c ${gleam_download_file}.sha256 --status; then
+        use_gleam_cache=true
+      fi
+      cd -
+    fi
+  fi
+}
+
+function update_gleam_cache_state() {
+  gleam_download_file="gleam-v${gleam_version}-x86_64-unknown-linux-musl.tar.gz"
+
+  use_gleam_cache=false
+  if [ "${force_fetch}" != "true" ]; then
+    check_gleam_cache
+  fi
+}
+
 function download_gleam() {
   # If a previous download does not exist, then always re-download
   mkdir -p $(gleam_cache_path)
 
-  if [ ${force_fetch} = true ] || [ ! -f $(gleam_cache_path)/$(gleam_download_file) ]; then
-    set -v
+  update_gleam_cache_state
+  if [ "${use_gleam_cache}" == "false" ]; then
     clean_gleam_downloads
     gleam_changed=true
-    local download_url="https://github.com/gleam-lang/gleam/releases/download/v1.5.0/gleam-v${gleam_version}-x86_64-unknown-linux-musl.tar.gz"
+    local base_url="https://github.com/gleam-lang/gleam/releases/download/"
+    local download_url="${base_url}v${gleam_version}/${gleam_download_file}"
+    local sha_url="${download_url}.sha256"
       
     output_section "Fetching Gleam ${gleam_version}"
 
-    if ! curl -s ${download_url} -o $(gleam_cache_path)/$(gleam_download_file); then
-      output_section "Falling back to fetching Gleam ${gleam_version}"
+    curl -sL ${download_url} -o $(gleam_cache_path)/${gleam_download_file}
+    curl -sL ${sha_url} -o $(gleam_cache_path)/${gleam_download_file}.sha256
+
+    output_section "Verifying Gleam ${gleam_version}"
+    check_gleam_cache
+    if [ "${use_gleam_cache}" == "false" ]; then
+      output_line "Checksum verification failed for Gleam download"
       exit 1
     fi
   else
@@ -30,7 +60,6 @@ function install_gleam() {
 }
 
 function gleam_download_file() {
-  local otp_version=$(otp_version ${erlang_version})
   echo gleam-${gleam_version}.tar.gz
 }
 
