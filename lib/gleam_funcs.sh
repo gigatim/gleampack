@@ -3,6 +3,7 @@ function download_gleam() {
   mkdir -p $(gleam_cache_path)
 
   if [ ${force_fetch} = true ] || [ ! -f $(gleam_cache_path)/$(gleam_download_file) ]; then
+    set -v
     clean_gleam_downloads
     gleam_changed=true
     local download_url="https://github.com/gleam-lang/gleam/releases/download/v1.5.0/gleam-v${gleam_version}-x86_64-unknown-linux-musl.tar.gz"
@@ -19,6 +20,7 @@ function download_gleam() {
 }
 
 function install_gleam() {
+  set -v
   output_section "Installing Gleam ${gleam_version} $(gleam_changed)"
 
   mkdir -p $(build_gleam_path)
