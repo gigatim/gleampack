@@ -36,10 +36,7 @@ function download_gleam() {
     output_section "Fetching Gleam ${gleam_version}"
 
     curl -sL ${download_url} -o $(gleam_cache_path)/${gleam_download_file}
-    echo "DOWNLOADING TO $(gleam_cache_path)/${gleam_download_file}"
     curl -sL ${sha_url} -o $(gleam_cache_path)/${gleam_download_file}.sha256
-    echo "DOWNLOADING TO $(gleam_cache_path)/${gleam_download_file}.sha256"
-    cat $(gleam_cache_path)/${gleam_download_file}.sha256
 
     output_section "Verifying Gleam ${gleam_version}"
     check_gleam_cache
@@ -58,12 +55,8 @@ function install_gleam() {
 
   mkdir -p $(build_gleam_path)
 
-  tar -xvf $(gleam_cache_path)/$(gleam_download_file) -C $(build_gleam_path)
+  tar -xvf $(gleam_cache_path)/${gleam_download_file} -C $(build_gleam_path)
   PATH=$(build_gleam_path):${PATH}
-}
-
-function gleam_download_file() {
-  echo gleam-${gleam_version}.tar.gz
 }
 
 function clean_gleam_downloads() {
