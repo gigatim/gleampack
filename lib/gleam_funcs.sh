@@ -13,7 +13,7 @@ function check_gleam_cache() {
 }
 
 function update_gleam_cache_state() {
-  gleam_download_file="gleam-v${gleam_version}-x86_64-unknown-linux-musl.tar.gz"
+  gleam_download_file="gleam-${gleam_version}-x86_64-unknown-linux-musl.tar.gz"
 
   use_gleam_cache=false
   if [ "${force_fetch}" != "true" ]; then
@@ -30,7 +30,7 @@ function download_gleam() {
     clean_gleam_downloads
     gleam_changed=true
     local base_url="https://github.com/gleam-lang/gleam/releases/download/"
-    local download_url="${base_url}v${gleam_version}/${gleam_download_file}"
+    local download_url="${base_url}${gleam_version}/${gleam_download_file}"
     local sha_url="${download_url}.sha256"
       
     output_section "Fetching Gleam ${gleam_version}"
