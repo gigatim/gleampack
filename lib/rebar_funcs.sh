@@ -21,18 +21,26 @@ function install_rebar() {
   output_section "Installing Rebar ${rebar_version} $(rebar_changed)"
 
   local src_path="$(rebar_cache_path)/rebar3-src"
-  mkdir -p $(rebar_cache_path)/rebar3-src
-  if ! tar -xzf "$(rebar_cache_path)/${rebar_download_file}" -C "${src_path}" --strip-components=1; then
-    output_line "Failed to extract Rebar archive"
-    clean_rebar_downloads
-    exit 1
+  local prior_dir=$(pwd)
+
+  if [ ! -x ${src_path}/rebar3 ]; then
+    mkdir -p $(rebar_cache_path)/rebar3-src
+    if ! tar -xzf "$(rebar_cache_path)/${rebar_download_file}" -C "${src_path}" --strip-components=1; then
+      output_line "Failed to extract Rebar archive"
+      clean_rebar_downloads
+      exit 1
+    fi
+
+    cd "${src_path}"
+    HOME=$PWD ./bootstrap
+
+    mkdir -p $(build_rebar_path)
+    cd "${prior_dir}"
   fi
 
   cd "${src_path}"
-  HOME=$PWD ./bootstrap
-
-  mkdir -p $(build_rebar_path)
   install -v ./rebar3 "$(build_rebar_path)/"
+  cd "${prior_dir}"
 
   #apk add --virtual .erlang-rundeps $runDeps lksctp-tools ca-certificates
   #apk del.fetch-deps .build-deps # buildkit 

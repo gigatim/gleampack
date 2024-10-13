@@ -22,7 +22,7 @@ function runtime_gleam_path() {
   echo "$(runtime_platform_tools_path)/gleam"
 }
 
-function runtime_rebar_path() {
+function build_rebar_path() {
   echo "$(runtime_platform_tools_path)/rebar3"
 }
 
