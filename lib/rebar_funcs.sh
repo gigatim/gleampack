@@ -20,8 +20,8 @@ function download_rebar() {
 function install_rebar() {
   output_section "Installing Rebar ${rebar_version} $(rebar_changed)"
 
-  local src_path="${rebar_cache_path}/rebar3-src"
-  mkdir -p ${rebar_cache_path}/rebar3-src
+  local src_path="$(rebar_cache_path)/rebar3-src"
+  mkdir -p $(rebar_cache_path)/rebar3-src
   if ! tar -xzf "$(rebar_cache_path)/${rebar_download_file}" -C "${src_path}" --strip-components=1; then
     output_line "Failed to extract Rebar archive"
     clean_rebar_downloads
