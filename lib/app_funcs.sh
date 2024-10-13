@@ -99,7 +99,7 @@ function compile_app() {
 #}
 
 function write_profile_d_script() {
-  #output_section "Creating .profile.d with env vars"
+  output_section "Creating .profile.d with env vars"
   #mkdir -p $build_path/.profile.d
   #local profile_path="${build_path}/.profile.d/gleam_buildpack_paths.sh"
 
@@ -107,7 +107,7 @@ function write_profile_d_script() {
 }
 
 function write_export() {
-  #output_section "Writing export for multi-buildpack support"
+  output_section "Writing export for multi-buildpack support"
 
   #echo_export_env_vars >> "${build_pack_path}/export"
 }
