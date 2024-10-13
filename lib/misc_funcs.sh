@@ -136,12 +136,6 @@ function clean_old_cache_files() {
   rm -rf ${cache_path}/gleam*.zip
 }
 
-function clean_gleam_version_dependent_cache() {
-  rm -rf \
-    $(hex_backup_path) \
-    $(mix_backup_path)
-}
-
 function clean_cache() {
   clean_old_cache_files
 

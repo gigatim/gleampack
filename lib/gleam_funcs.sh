@@ -64,19 +64,8 @@ function clean_gleam_downloads() {
   mkdir -p $(gleam_cache_path)
 }
 
-function install_rebar() {
-  output_section "Installing rebar"
-
-  mix local.rebar --force
-}
-
 function gleam_changed() {
   if [ $gleam_changed = true ]; then
     echo "(changed)"
-    clean_gleam_version_dependent_cache
   fi
-}
-
-function otp_version() {
-  echo $(echo "$1" | awk 'match($0, /^[0-9][0-9]/) { print substr( $0, RSTART, RLENGTH )}')
 }

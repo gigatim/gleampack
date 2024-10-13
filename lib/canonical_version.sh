@@ -79,6 +79,14 @@ check_gleam_version() {
   rm -f /tmp/gleam_versions
 }
 
+check_rebar_version() {
+  # we are going to assume latest for now
+  curl -s "https://api.github.com/repos/erlang/rebar3/releases/latest" > /tmp/erlang_version.json
+  rebar_version=$(cat /tmp/erlang_version.json | jq -r '.tag_name')
+
+  output_line "* Rebar ${rebar_version}"
+}
+
 print_columns() {
   awk '
     {

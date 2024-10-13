@@ -22,6 +22,10 @@ function runtime_gleam_path() {
   echo "$(runtime_platform_tools_path)/gleam"
 }
 
+function runtime_rebar_path() {
+  echo "$(runtime_platform_tools_path)/rebar3"
+}
+
 function build_hex_home_path() {
   echo "${build_path}/.hex"
 }
@@ -64,4 +68,8 @@ function erlang_cache_path() {
 
 function gleam_cache_path() {
   echo $(stack_based_cache_path)/gleam
+}
+
+function rebar_cache_path() {
+  echo $(stack_based_cache_path)/rebar
 }

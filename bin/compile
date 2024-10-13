@@ -23,6 +23,7 @@ source ${build_pack_path}/lib/path_funcs.sh
 source ${build_pack_path}/lib/misc_funcs.sh
 source ${build_pack_path}/lib/erlang_funcs.sh
 source ${build_pack_path}/lib/gleam_funcs.sh
+source ${build_pack_path}/lib/rebar_funcs.sh
 source ${build_pack_path}/lib/app_funcs.sh
 source ${build_pack_path}/lib/canonical_version.sh
 
@@ -32,6 +33,7 @@ export_env_vars
 load_config
 check_erlang_version "$erlang_version"
 check_gleam_version "$gleam_version"
+check_rebar_version "$rebar_version"
 
 check_stack
 clean_cache
@@ -41,6 +43,8 @@ install_erlang
 
 download_gleam
 install_gleam
+
+download_rebar
 install_rebar
 
 # deprecated_hook, here for backwards compatibility
