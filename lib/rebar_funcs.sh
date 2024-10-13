@@ -39,6 +39,7 @@ function install_rebar() {
   fi
 
   cd "${src_path}"
+  mkdir -p $(build_rebar_path)
   install -v ./rebar3 "$(build_rebar_path)/"
   cd "${prior_dir}"
 
