@@ -35,6 +35,9 @@ check_erlang_version "$erlang_version"
 check_gleam_version "$gleam_version"
 check_rebar_version "$rebar_version"
 
+# TODO: rebar/gleam are only used for building the app
+# TODO: allow setting rebar version
+
 check_stack
 clean_cache
 
@@ -47,23 +50,11 @@ install_gleam
 download_rebar
 install_rebar
 
-# deprecated_hook, here for backwards compatibility
-pre_compile_hook
-
-restore_app
 hook_pre_app_dependencies
-app_dependencies
 
 hook_pre_compile
 compile_app
 hook_post_compile
 
-release_app
-
-backup_app
-backup_mix
 write_profile_d_script
 write_export
-
-# deprecated_hook, here for backwards compatibility
-post_compile_hook
